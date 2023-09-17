@@ -1,6 +1,16 @@
-public struct SHDesign {
-    public private(set) var text = "Hello, World!"
+//
+//  SahibDesign.swift
+//  SahibDesign
+//
+//  Created by Sahib Hussain on 22/06/23.
+//
 
-    public init() {
+import AVFoundation
+
+public struct SHDesign {
+    
+    static func playSystemAudio(_ id: SystemSoundID) {
+        AudioServicesPlaySystemSound(id)
     }
+    
 }
