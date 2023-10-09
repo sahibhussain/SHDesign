@@ -22,7 +22,6 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         manager.desiredAccuracy = kCLLocationAccuracyBest
         manager.requestWhenInUseAuthorization()
         manager.delegate = self
-        manager.startUpdatingLocation()
     }
     
     

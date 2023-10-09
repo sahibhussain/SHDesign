@@ -1,5 +1,5 @@
 //
-//  UserSettingManager.swift
+//  UserDefaultManager.swift
 //  SplootIOS
 //
 //  Created by Sahib Hussain on 20/04/22.
@@ -8,9 +8,9 @@
 import Foundation
 
 
-class UserSettingManager {
+public class UserDefaultManager {
     
-    static let shared = UserSettingManager()
+    static let shared = UserDefaultManager()
     private init(){}
     
     
