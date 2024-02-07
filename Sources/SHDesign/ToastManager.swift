@@ -7,9 +7,9 @@
 
 import UIKit
 
-struct ToastManager {
+public struct ToastManager {
     
-    static func show(
+    public static func show(
         _ title: String,
         subTitle: String = "",
         image: UIImage? = nil,
@@ -30,14 +30,14 @@ struct ToastManager {
         }
     }
     
-    static func showSuccess(_ title: String, subtitle: String = "", completion: (() -> Void)? = nil) {
+    public static func showSuccess(_ title: String, subtitle: String = "", completion: (() -> Void)? = nil) {
         show(title, subTitle: subtitle, image: UIImage(systemName: "checkmark.seal.fill"), haptic: .success)
         DispatchQueue.main.asyncAfter(wallDeadline: .now()+1) {
             completion?()
         }
     }
     
-    static func showError(_ title: String, subtitle: String = "", completion: (() -> Void)? = nil) {
+    public static func showError(_ title: String, subtitle: String = "", completion: (() -> Void)? = nil) {
         show(title, subTitle: subtitle, image: UIImage(systemName: "xmark.seal"), haptic: .error)
         DispatchQueue.main.asyncAfter(wallDeadline: .now()+1) {
             completion?()
