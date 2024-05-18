@@ -9,28 +9,52 @@ import Foundation
 import AVFoundation
 import SwiftSoup
 
+
+public enum PreviewType: String, Codable {
+    
+    case product, website, article, book, profile, unknown
+    
+    case movie = "video.movie"
+    case tvShow = "video.tv_show"
+    case video = "video.other"
+    
+    case song = "music.song"
+    case album = "music.album"
+    case playlist = "music.playlist"
+    case radioStation = "music.radio_station"
+    
+}
+
 public struct LinkPreviewModal: Codable {
     
     public let id: UUID
     public let url: URL
-    public let imageURL: URL?
+    public var type: PreviewType
+    
+    public let siteName: String
     public let title: String
     public let description: String
     
+    public let imageURL: URL?
     public let videoURL: URL?
-    public let price: String
     
-    init(_ url: URL, imageURL: URL?, title: String, description: String, videoURL: URL?, price: String) {
-        
+    public let locale: String
+    
+    public let price: String
+    public let currentcy: String
+    
+    init(_ url: URL, type: PreviewType, siteName: String, title: String, description: String, imageURL: URL?, videoURL: URL?, locale: String, price: String, currentcy: String) {
         self.id = UUID()
         self.url = url
-        self.imageURL = imageURL
+        self.type = type
+        self.siteName = siteName
         self.title = title
         self.description = description
-        
+        self.imageURL = imageURL
         self.videoURL = videoURL
+        self.locale = locale
         self.price = price
-        
+        self.currentcy = currentcy
     }
     
 }
@@ -44,48 +68,101 @@ public class SHDesign {
         AudioServicesPlaySystemSound(id)
     }
     
-    public func fetchMetadata(of url: URL, completion: @escaping ([Element]) -> Void) {
+    public func fetchMetadata(of url: URL, completion: @escaping (LinkPreviewModal?) -> Void) {
         DispatchQueue.global(qos: .background)
             .async { [weak self] in
                 URLSession.shared.dataTask(with: .init(url: url)) { data, response, error in
                     guard let data,
                           let htmlString = String(data: data, encoding: .utf8),
-                          let metas = self?.parse(htmlString) else { completion([]); return }
-                    completion(metas.array())
+                          let preview = self?.parse(htmlString, url: url) else { completion(nil); return }
+                    completion(preview)
                 }.resume()
             }
     }
     
-    private func parse(_ html: String) -> Elements? {
+    private func parse(_ html: String, url: URL) -> LinkPreviewModal? {
         
         guard let doc = try? SwiftSoup.parse(html), let metas = try? doc.select("meta") else { return nil }
-        return metas
         
-//
-//        do {
-//            let doc = try SwiftSoup.parse(html)
-//
-//            let metas = try doc.select("meta")
-//            var result: [String: [String]] = [:]
-//            
-//            metas.forEach { meta in
-//                guard var propertyName = try? meta.attr("property"), let content = try? meta.attr("content") else { return }
-//                if propertyName.isEmpty, let metaName = try? meta.attr("name") {
-//                    propertyName = metaName
-//                }
-//                
-//                var currentValues = result[propertyName, default: []]
-//                currentValues.append(content)
-//                result.updateValue(currentValues, forKey: propertyName)
-//            }
-//            if let title = try? doc.title() {
-//                result["title"] = [title]
-//            }
-//            
-//            return OpenGraphResponse(source: result)
-//        } catch {
-//            throw OpenGraphError.parsingError(error)
-//        }
+        var type: PreviewType = .unknown
+        
+        var siteName = ""
+        var title = try? doc.title()
+        var description = ""
+        
+        var imageURL: URL? = nil
+        var videoURL: URL? = nil
+        
+        var locale = ""
+        
+        var price = ""
+        var currency = ""
+        
+        for meta in metas.array() {
+            
+            let propertyName = try? meta.attr("property")
+            let content = try? meta.attr("content")
+            let prop = try? meta.attr("itemprop")
+            let metaName = try? meta.attr("name")
+            
+            // MARK: type
+            if let propertyName, let content, propertyName == "og:type" {
+                type = .init(rawValue: content) ?? .unknown
+            }
+            
+            // MARK: site name
+            if let propertyName, let content, (propertyName == "og:site_name" || propertyName == "twitter:site_name") {
+                siteName = content
+            }
+            
+            // MARK: title
+            if let propertyName, let content, (propertyName == "og:title" || propertyName == "twitter:title") {
+                title = content
+            }
+            
+            // MARK: description
+            if let propertyName, let content, (propertyName == "og:description" || propertyName == "twitter:description") {
+                description = content
+            }
+            
+            if let metaName, let content, (metaName == "description" || metaName == "twitter:description" || metaName == "og:description") {
+                description = content
+            }
+            
+            // MARK: imageURL
+            if let prop, let content, prop == "image", let host = url.host  {
+                imageURL = URL(string: content) ?? URL(string: host + content )
+            }
+            
+            if let propertyName, let content, (propertyName == "og:image" || propertyName == "twitter:image") {
+                imageURL = URL(string: content)
+            }
+            
+            // MARK: videoIRL
+            if let propertyName, let content, propertyName == "og:video" {
+                videoURL = URL(string: content)
+            }
+            
+            // MARK: locale
+            if let propertyName, let content, propertyName == "og:locale" {
+                locale = content
+            }
+            
+            // MARK: price
+            if let propertyName, let content, propertyName == "product:price:amount" {
+                price = content
+            }
+            
+            // MARK: currency
+            if let propertyName, let content, propertyName == "product:price:currency" {
+                currency = content
+            }
+            
+            
+        }
+        
+        return .init(url, type: type, siteName: siteName, title: title ?? "", description: description, imageURL: imageURL, videoURL: videoURL, locale: locale, price: price, currentcy: currency)
+        
     }
     
 }
