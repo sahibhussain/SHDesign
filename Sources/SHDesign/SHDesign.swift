@@ -9,7 +9,7 @@ import Foundation
 import AVFoundation
 import SwiftSoup
 
-struct LinkPreviewModal: Codable {
+public struct LinkPreviewModal: Codable {
     
     let id: UUID
     let url: URL
@@ -37,7 +37,7 @@ struct LinkPreviewModal: Codable {
 
 public class SHDesign {
     
-    static let shared = SHDesign()
+    public static let shared = SHDesign()
     private init() {}
     
     public func playSystemAudio(_ id: SystemSoundID) {
