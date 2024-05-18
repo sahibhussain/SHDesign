@@ -11,14 +11,14 @@ import SwiftSoup
 
 public struct LinkPreviewModal: Codable {
     
-    let id: UUID
-    let url: URL
-    let imageURL: URL?
-    let title: String
-    let description: String
+    public let id: UUID
+    public let url: URL
+    public let imageURL: URL?
+    public let title: String
+    public let description: String
     
-    let videoURL: URL?
-    let price: String
+    public let videoURL: URL?
+    public let price: String
     
     init(_ url: URL, imageURL: URL?, title: String, description: String, videoURL: URL?, price: String) {
         
