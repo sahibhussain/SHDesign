@@ -31,19 +31,19 @@ public struct LinkPreviewModal: Codable {
     public let url: URL
     public var type: PreviewType
     
-    public let siteName: String
-    public let title: String
-    public let description: String
+    public let siteName: String?
+    public let title: String?
+    public let description: String?
     
     public let imageURL: URL?
     public let videoURL: URL?
     
-    public let locale: String
+    public let locale: String?
     
-    public let price: String
-    public let currentcy: String
+    public let price: String?
+    public let currentcy: String?
     
-    init(_ url: URL, type: PreviewType, siteName: String, title: String, description: String, imageURL: URL?, videoURL: URL?, locale: String, price: String, currentcy: String) {
+    init(_ url: URL, type: PreviewType, siteName: String?, title: String?, description: String?, imageURL: URL?, videoURL: URL?, locale: String?, price: String?, currentcy: String?) {
         self.id = UUID()
         self.url = url
         self.type = type
@@ -86,17 +86,17 @@ public class SHDesign {
         
         var type: PreviewType = .unknown
         
-        var siteName = ""
+        var siteName: String? = nil
         var title = try? doc.title()
-        var description = ""
+        var description: String? = nil
         
         var imageURL: URL? = nil
         var videoURL: URL? = nil
         
-        var locale = ""
+        var locale: String? = nil
         
-        var price = ""
-        var currency = ""
+        var price: String? = nil
+        var currency: String? = nil
         
         for meta in metas.array() {
             
@@ -174,7 +174,7 @@ public class SHDesign {
         }
         
         
-        return .init(url, type: type, siteName: siteName, title: title ?? "", description: description, imageURL: imageURL, videoURL: videoURL, locale: locale, price: price, currentcy: currency)
+        return .init(url, type: type, siteName: siteName, title: title, description: description, imageURL: imageURL, videoURL: videoURL, locale: locale, price: price, currentcy: currency)
         
     }
     
