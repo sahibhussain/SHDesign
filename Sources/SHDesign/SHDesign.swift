@@ -44,20 +44,22 @@ public class SHDesign {
         AudioServicesPlaySystemSound(id)
     }
     
-    public func fetchMetadata(of url: URL) {
+    public func fetchMetadata(of url: URL, completion: @escaping ([Element]) -> Void) {
         DispatchQueue.global(qos: .background)
             .async { [weak self] in
                 URLSession.shared.dataTask(with: .init(url: url)) { data, response, error in
-                    guard let data, let htmlString = String(data: data, encoding: .utf8) else { return }
-                    self?.parse(htmlString)
+                    guard let data,
+                          let htmlString = String(data: data, encoding: .utf8),
+                          let metas = self?.parse(htmlString) else { completion([]); return }
+                    completion(metas.array())
                 }.resume()
             }
     }
     
-    private func parse(_ html: String) {
+    private func parse(_ html: String) -> Elements? {
         
-        guard let doc = try? SwiftSoup.parse(html), let metas = try? doc.select("meta") else { return }
-        print(metas)
+        guard let doc = try? SwiftSoup.parse(html), let metas = try? doc.select("meta") else { return nil }
+        return metas
         
 //
 //        do {
