@@ -161,6 +161,19 @@ public class SHDesign {
             
         }
         
+        
+        // youtube image
+        if let linkTags = try? doc.select("link") {
+            for link in linkTags {
+                let asName = try? link.attr("as")
+                let href = try? link.attr("href")
+                if let asName, let href, asName == "image" {
+                    imageURL = URL(string: href)
+                }
+            }
+        }
+        
+        
         return .init(url, type: type, siteName: siteName, title: title ?? "", description: description, imageURL: imageURL, videoURL: videoURL, locale: locale, price: price, currentcy: currency)
         
     }
