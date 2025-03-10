@@ -179,3 +179,11 @@ public class SHDesign {
     }
     
 }
+
+public func mainThread(_ delay: TimeInterval = 0, block: @escaping () -> Void) {
+    DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: block)
+}
+
+public func globalThread(_ delay: TimeInterval = 0, qos: DispatchQoS.QoSClass = .background, block: @escaping () -> Void) {
+    DispatchQueue.global(qos: qos).asyncAfter(deadline: .now() + delay, execute: block)
+}
