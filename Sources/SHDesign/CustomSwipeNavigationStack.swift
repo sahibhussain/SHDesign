@@ -30,6 +30,7 @@ public struct CustomSwipeNavigation<Content: View>: View {
     public var body: some View {
         NavigationStack(path: $path) {
             content
+                .toolbar(.hidden, for: .navigationBar)
                 .background {
                     AttachGestureView(gesture: $customGesture)
                 }
@@ -83,7 +84,7 @@ fileprivate struct FullSwipeModifier: ViewModifier {
             }
             .onDisappear {
                 guard let gestureID else { return }
-                NotificationCenter.default.post(name: .init(gestureID), object: nil, userInfo: ["status": true])
+                NotificationCenter.default.post(name: .init(gestureID), object: nil, userInfo: ["status": isEnabled])
             }
     }
 }
