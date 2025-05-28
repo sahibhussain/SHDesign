@@ -9,8 +9,8 @@ import SwiftUI
 
 public struct CustomSwipeNavigation<Content: View>: View {
     
-    @Binding var path: NavigationPath
-    @ViewBuilder var content: Content
+    @Binding public var path: NavigationPath
+    @ViewBuilder public var content: Content
     
     @State private var customGesture: UIPanGestureRecognizer = {
         let gesture = UIPanGestureRecognizer()
