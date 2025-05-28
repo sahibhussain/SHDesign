@@ -9,6 +9,7 @@ import SwiftUI
 
 public struct CustomSwipeNavigation<Content: View>: View {
     
+    @Binding var path: NavigationPath
     @ViewBuilder var content: Content
     
     @State private var customGesture: UIPanGestureRecognizer = {
@@ -19,7 +20,7 @@ public struct CustomSwipeNavigation<Content: View>: View {
     }()
     
     public var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             content
                 .background {
                     AttachGestureView(gesture: $customGesture)
