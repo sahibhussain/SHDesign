@@ -83,7 +83,7 @@ fileprivate struct FullSwipeModifier: ViewModifier {
             }
             .onDisappear {
                 guard let gestureID else { return }
-                NotificationCenter.default.post(name: .init(gestureID), object: nil, userInfo: ["status": isEnabled])
+                NotificationCenter.default.post(name: .init(gestureID), object: nil, userInfo: ["status": true])
             }
     }
 }
