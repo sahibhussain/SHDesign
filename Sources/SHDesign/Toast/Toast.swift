@@ -2,7 +2,7 @@
 //  Toast.swift
 //  Toast
 //
-//  Created by Bastiaan Jansen on 27/06/2021.
+//  Created by Sahib Hussain on 27/06/2021.
 //
 
 import UIKit

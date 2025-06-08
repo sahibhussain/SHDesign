@@ -2,7 +2,7 @@
 //  ToastConfiguration.swift
 //  Toast
 //
-//  Created by Bastiaan Jansen on 28/06/2021.
+//  Created by Sahib Hussain on 28/06/2021.
 //
 
 import Foundation
